@@ -25,7 +25,7 @@ def main():
     theme = gr.themes.Soft(font=["Inter", "system-ui", "sans-serif"])
 
     with gr.Blocks(title="Ruby on Rails Expert Assistant", theme=theme) as ui:
-        gr.Markdown("# 🏢 Ruby on Rails Expert Assistant\nAsk me anything about Ruby on Rails!")
+        gr.Markdown("#💎 Ruby on Rails Expert Assistant\nAsk me anything about Ruby on Rails!")
 
         with gr.Row():
             with gr.Column(scale=1):
