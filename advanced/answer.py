@@ -10,7 +10,7 @@ from advanced.ingest import Result
 
 load_dotenv(override=True)
 
-MODEL = "gpt-5.4-mini"
+MODEL = "gpt-5.4"
 DB_NAME = "rag_db"
 KNOWLEDGE_BASE_PATH = Path("rorkb")
 AVERAGE_CHUNK_SIZE = 500
