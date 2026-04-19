@@ -1,22 +1,21 @@
 from pathlib import Path
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_chroma import Chroma
-from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.messages import SystemMessage, HumanMessage, convert_to_messages
 from langchain_core.documents import Document
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
-MODEL = "gpt-4.1-nano"
+MODEL = "ollama/qwen3.5:9b"
 DB_NAME = str(Path(__file__).parent.parent / "langchain_db")
 
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
 RETRIEVAL_K = 10
 
 SYSTEM_PROMPT = """
-You are a knowledgeable, friendly assistant representing the company Insurellm.
-You are chatting with a user about Insurellm.
+You are a knowledgeable, friendly assistant expert at Ruby on Rails.
+You are chatting with a user about Ruby on Rails.
 If relevant, use the given context to answer any question.
 If you don't know the answer, say so.
 Context:

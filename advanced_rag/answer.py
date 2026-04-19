@@ -6,13 +6,13 @@ from pydantic import BaseModel, Field
 from chromadb import PersistentClient
 from litellm import completion
 
-from advanced.ingest import Result
+from advanced_rag.ingest import Result
 
 load_dotenv(override=True)
 
 MODEL = "gpt-4.1-nano"
-DB_NAME = "rag_db"
-KNOWLEDGE_BASE_PATH = Path("rorkb")
+DB_NAME = "advanced_db"
+KNOWLEDGE_BASE_PATH = Path("ror_kb")
 AVERAGE_CHUNK_SIZE = 500
 RETRIEVAL_K = 10
 

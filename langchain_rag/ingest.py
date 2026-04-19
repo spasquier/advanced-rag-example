@@ -4,13 +4,11 @@ from pathlib import Path
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
-from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_openai import OpenAIEmbeddings
 from dotenv import load_dotenv
 
-MODEL = "gpt-4.1-nano"
 DB_NAME = str(Path(__file__).parent.parent / "langchain_db")
-KNOWLEDGE_BASE = str(Path(__file__).parent.parent / "rorkb")
+KNOWLEDGE_BASE = str(Path(__file__).parent.parent / "ror_kb")
 
 load_dotenv(override=True)
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")

@@ -12,7 +12,7 @@ HF_TOKEN=***
 ```
 ## Option A: RAG with Langchain
 
-### Ingesting markdown Ruby on Rails documentation in rorkb directory
+### Ingesting markdown Ruby on Rails documentation in ror_kb directory
 To ingest the markdown files and convert them to a vector (Chroma) database run:
 ```bash
 python withlangchain/ingest.py
@@ -25,7 +25,7 @@ python langchain_rag_app.py
 ```
 ## Option B: RAG without Langchain
 
-### Ingesting markdown Ruby on Rails documentation in rorkb directory
+### Ingesting markdown Ruby on Rails documentation in ror_kb directory
 To ingest the markdown files without using the Langchain:
 ```bash
 python advanced/ingest.py

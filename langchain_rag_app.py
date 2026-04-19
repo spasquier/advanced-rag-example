@@ -1,6 +1,6 @@
 import gradio as gr
 from dotenv import load_dotenv
-from withlangchain.answer import answer_question
+from langchain_rag.answer import answer_question
 
 load_dotenv(override=True)
 
