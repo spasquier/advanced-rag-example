@@ -1,5 +1,5 @@
-# advanced-rag-example
-Sample Advanced RAG to query markdown documents.
+# Advanced RAG Example
+Advanced RAG Example: query markdown documents.
 
 ### Installing dependencies
 Install `uv` and execute the command `uv sync` in the project root to install dependencies.
