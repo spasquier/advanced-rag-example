@@ -15,7 +15,7 @@ HF_TOKEN=***
 ### Ingesting markdown Ruby on Rails documentation in ror_kb directory
 To ingest the markdown files and convert them to a vector (Chroma) database run:
 ```bash
-python withlangchain/ingest.py
+python langchain_rag/ingest.py
 ```
 
 ### Running the Gradio interface
@@ -28,7 +28,7 @@ python langchain_rag_app.py
 ### Ingesting markdown Ruby on Rails documentation in ror_kb directory
 To ingest the markdown files without using the Langchain:
 ```bash
-python advanced/ingest.py
+python advanced_rag/ingest.py
 ```
 
 ### Running the Gradio interface
