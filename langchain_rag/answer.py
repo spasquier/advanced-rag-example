@@ -1,5 +1,6 @@
 from pathlib import Path
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_ollama import ChatOllama
+from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.messages import SystemMessage, HumanMessage, convert_to_messages
 from langchain_core.documents import Document
@@ -7,7 +8,8 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
-MODEL = "gpt-4.1-nano"
+# MODEL = "gpt-4.1-nano"
+MODEL = "qwen3.5:9b"
 DB_NAME = str(Path(__file__).parent.parent / "langchain_db")
 
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
@@ -24,7 +26,7 @@ Context:
 
 vectorstore = Chroma(persist_directory=DB_NAME, embedding_function=embeddings)
 retriever = vectorstore.as_retriever()
-llm = ChatOpenAI(temperature=0, model_name=MODEL)
+llm = ChatOllama(temperature=0, model=MODEL)
 
 
 def fetch_context(question: str) -> list[Document]:
