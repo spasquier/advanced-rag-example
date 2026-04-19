@@ -9,7 +9,7 @@ from litellm import completion
 
 load_dotenv(override=True)
 
-MODEL = "gpt-5.4"
+MODEL = "gpt-4.1-nano"
 DB_NAME = "rag_db"
 KNOWLEDGE_BASE_PATH = Path("rorkb")
 AVERAGE_CHUNK_SIZE = 500
