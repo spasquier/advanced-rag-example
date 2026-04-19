@@ -10,17 +10,18 @@ from advanced_rag.ingest import Result
 
 load_dotenv(override=True)
 
-MODEL = "gpt-4.1-nano"
+MODEL = "ollama/llama3.1:8b" # LiteLLM completion model
+RERANK_MODEL = "gpt-4.1-nano"
 DB_NAME = "advanced_db"
 KNOWLEDGE_BASE_PATH = Path("ror_kb")
 AVERAGE_CHUNK_SIZE = 500
 RETRIEVAL_K = 10
 
-collection_name = "docs"
-embedding_model = "text-embedding-3-large"
-openai = OpenAI()
+COLLECTION_NAME = "docs"
+EMBEDDING_MODEL = "nomic-embed-text-v2-moe"
+ollama = OpenAI(base_url="http://localhost:11434/v1", api_key='ollama')
 chroma = PersistentClient(path=DB_NAME)
-collection = chroma.get_or_create_collection(collection_name)
+collection = chroma.get_or_create_collection(COLLECTION_NAME)
 
 
 class RankOrder(BaseModel):
@@ -46,7 +47,7 @@ Reply only with the list of ranked chunk ids, nothing else. Include all the chun
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
     ]
-    response = completion(model=MODEL, messages=messages, response_format=RankOrder)
+    response = completion(model=RERANK_MODEL, messages=messages, response_format=RankOrder)
     reply = response.choices[0].message.content
     order = RankOrder.model_validate_json(reply).order
     print(order)
@@ -54,7 +55,7 @@ Reply only with the list of ranked chunk ids, nothing else. Include all the chun
 
 
 def fetch_context_unranked(question):
-    query = openai.embeddings.create(model=embedding_model, input=[question]).data[0].embedding
+    query = ollama.embeddings.create(model=EMBEDDING_MODEL, input=[question]).data[0].embedding
     results = collection.query(query_embeddings=[query], n_results=RETRIEVAL_K)
     chunks = []
     for result in zip(results["documents"][0], results["metadatas"][0]):

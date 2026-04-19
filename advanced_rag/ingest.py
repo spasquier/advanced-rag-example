@@ -9,14 +9,14 @@ from litellm import completion
 
 load_dotenv(override=True)
 
-MODEL = "gpt-4.1-nano"
+MODEL = "ollama/llama3.1:8b" # LiteLLM completion model
 DB_NAME = "advanced_db"
 KNOWLEDGE_BASE_PATH = Path("ror_kb")
 AVERAGE_CHUNK_SIZE = 500
 
-collection_name = "docs"
-embedding_model = "text-embedding-3-large"
-openai = OpenAI()
+COLLECTION_NAME = "docs"
+EMBEDDING_MODEL = "nomic-embed-text-v2-moe"
+ollama = OpenAI(base_url="http://localhost:11434/v1", api_key='ollama')
 
 # LangChain's Document equivalent
 class Result(BaseModel):
@@ -54,44 +54,51 @@ def fetch_documents():
     return documents
 
 
-# Chunk generator prompt template
-def make_prompt(document):
-    how_many = (len(document["text"]) // AVERAGE_CHUNK_SIZE) + 1
-    return f"""
-You take a document and you split the document into overlapping chunks for a KnowledgeBase.
-
-The document is from the shared drive of Ruby on Rails Guides.
-The document is of type: {document["type"]}
-The document has been retrieved from: {document["source"]}
-
-A chatbot will use these chunks to answer questions about Ruby on Rails.
-You should divide up the document as you see fit, being sure that the entire document is returned in the chunks - don't leave anything out.
-This document should probably be split into {how_many} chunks, but you can have more or less as appropriate.
-There should be overlap between the chunks as appropriate; typically about 25% overlap or about 50 words, so you have the same text in multiple chunks for best retrieval results.
-
-For each chunk, you should provide a headline, a summary, and the original text of the chunk.
-Together your chunks should represent the entire document with overlap.
-
-Here is the document:
-
-{document["text"]}
-
-Respond with the chunks.
-"""
-
-
-# Call the LLM to generate the chunks
-def make_messages(document):
-    return [
-        {"role": "user", "content": make_prompt(document)},
-    ]
-
 def process_document(document):
-    messages = make_messages(document)
-    response = completion(model=MODEL, messages=messages, response_format=Chunks)
-    reply = response.choices[0].message.content
-    doc_as_chunks = Chunks.model_validate_json(reply).chunks
-    return [chunk.as_result(document) for chunk in doc_as_chunks]
+    # Deterministic chunking: split the document into overlapping
+    # chunks of `chunk_size` characters with `overlap` characters overlap.
+    text = document.get("text", "") or ""
+    chunk_size = AVERAGE_CHUNK_SIZE
+    overlap = 200
+    step = chunk_size - overlap if chunk_size > overlap else chunk_size
+
+    if not text:
+        return []
+
+    chunks = []
+    start = 0
+    text_len = len(text)
+    import re
+
+    while start < text_len:
+        end = start + chunk_size
+        chunk_text = text[start:end]
+
+        # Headline: first non-empty line or a trimmed prefix
+        stripped = chunk_text.strip()
+        if stripped:
+            first_line = stripped.splitlines()[0].strip()
+            headline = (first_line[:75].rstrip() + "...") if len(first_line) > 75 else first_line
+        else:
+            headline = ""
+
+        # Summary: prefer the first sentence; otherwise a trimmed prefix
+        max_summary_len = 200
+        m = re.search(r'([^.?!]*[.?!])', stripped)
+        if m and len(m.group(0)) <= max_summary_len:
+            summary = m.group(0).strip()
+        else:
+            summary = (stripped[:max_summary_len].rstrip() + "...") if len(stripped) > max_summary_len else stripped
+
+        chunks.append(Chunk(headline=headline, summary=summary, original_text=chunk_text))
+
+        start += step
+
+        if end >= text_len:
+            break
+
+    return [chunk.as_result(document) for chunk in chunks]
+
 
 def create_chunks(documents):
     chunks = []
@@ -102,14 +109,14 @@ def create_chunks(documents):
 
 def create_embeddings(chunks):
     chroma = PersistentClient(path=DB_NAME)
-    if collection_name in [c.name for c in chroma.list_collections()]:
-        chroma.delete_collection(collection_name)
+    if COLLECTION_NAME in [c.name for c in chroma.list_collections()]:
+        chroma.delete_collection(COLLECTION_NAME)
 
     texts = [chunk.page_content for chunk in chunks]
-    emb = openai.embeddings.create(model=embedding_model, input=texts).data
+    emb = ollama.embeddings.create(model=EMBEDDING_MODEL, input=texts).data
     vectors = [e.embedding for e in emb]
 
-    collection = chroma.get_or_create_collection(collection_name)
+    collection = chroma.get_or_create_collection(COLLECTION_NAME)
 
     ids = [str(i) for i in range(len(chunks))]
     metas = [chunk.metadata for chunk in chunks]
