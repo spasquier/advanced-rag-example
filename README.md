@@ -4,6 +4,8 @@ Advanced RAG Example: query markdown documents.
 ### Installing dependencies
 Install `uv` and execute the command `uv sync` in the project root to install dependencies.
 
+Also install ollama and pull the models `llama3.1:8b` and `nomic-embed-text-v2-moe`
+
 ### Setting up your environment variables
 Create an .env file in the project root with your OpenAI and HuggingFace secret tokens
 ```
@@ -27,8 +29,6 @@ python langchain_rag_app.py
 
 ### Ingesting markdown Ruby on Rails documentation in ror_kb directory
 To ingest the markdown files without using the Langchain
-(this can cost a lot depending of the selected model
-because the context for the chuking prompt are big markdown files):
 ```bash
 python advanced_rag/ingest.py
 ```
