@@ -5,14 +5,13 @@ from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 from chromadb import PersistentClient
 from tqdm import tqdm
-from litellm import completion
 
 load_dotenv(override=True)
 
 MODEL = "ollama/llama3.1:8b" # LiteLLM completion model
 DB_NAME = "advanced_db"
 KNOWLEDGE_BASE_PATH = Path("ror_kb")
-AVERAGE_CHUNK_SIZE = 500
+AVERAGE_CHUNK_SIZE = 1100
 
 COLLECTION_NAME = "docs"
 EMBEDDING_MODEL = "nomic-embed-text-v2-moe"

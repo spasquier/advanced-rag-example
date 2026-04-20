@@ -90,7 +90,7 @@ def make_rag_messages(question, history, chunks):
 def rewrite_query(question, history=[]):
     """Rewrite the user's question to be a more specific question that is more likely to surface relevant content in the Knowledge Base."""
     message = f"""
-You are in a conversation with a user, answering questions about the company Insurellm.
+You are in a conversation with a user, answering questions about Ruby on Rails.
 You are about to look up information in a Knowledge Base to answer the user's question.
 
 This is the history of your conversation so far with the user:
