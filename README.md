@@ -21,7 +21,7 @@ python langchain_rag/ingest.py
 ```
 
 ### Running the Gradio interface
-To run the chatbot UI (Gradio) run after having executed the ingestion:
+To run the chatbot UI (Gradio) after having executed the ingestion:
 ```bash
 python langchain_rag_app.py
 ```
