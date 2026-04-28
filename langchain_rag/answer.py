@@ -40,7 +40,8 @@ def combined_question(question: str, history: list[dict] = []) -> str:
     """
     Combine all the user's messages into a single string.
     """
-    prior = "\n".join(m["content"] for m in history if m["role"] == "user")
+    #print(history)
+    prior = "\n".join(m["content"][0]["text"] for m in history if m["role"] == "user")
     return prior + "\n" + question
 
 
