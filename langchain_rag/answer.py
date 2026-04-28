@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 
 # MODEL = "gpt-4.1-nano"
-MODEL = "qwen3.5:9b"
+MODEL = "llama3.1:8b"
 DB_NAME = str(Path(__file__).parent.parent / "langchain_db")
 
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
